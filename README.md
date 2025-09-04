@@ -23,3 +23,16 @@ Petit challenge fait
 
 
 TD1 FIN
+
+
+# TP 1
+
+
+Création du modèle
+
+Migrations 001/2/3/4/5/6 fait
+
+Petit challenge fait (pas d'ajout dans le shell donc rien ne s'affiche)
+
+
+TP1 FIN
