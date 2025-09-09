@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 
 class Categorie(models.Model):
@@ -12,13 +13,13 @@ class Statut(models.Model):
     libelle = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.idStatut
+        return self.libelle
     
 class Produit(models.Model):
     refProd = models.AutoField(primary_key=True)
     intituleProd = models.CharField(max_length=200)
     prixUnitaireProd = models.DecimalField(max_digits=10, decimal_places=2)
-    dateFabr = models.DateField(auto_now=True)
+    dateFabr = models.DateField(default=date.today())
     # Relation CIF : chaque produit appartient à 1 catégorie (0,N côté catégorie 1,1 côté produit)→
     categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, related_name="produits",null=True, blank=True)
     statut = models.ForeignKey(Statut, on_delete=models.CASCADE, related_name="produitS",null=True, blank=True)
@@ -30,7 +31,7 @@ class Rayon(models.Model):
     nomRayon = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.idRayon
+        return self.nomRayon
 
 class Contenir(models.Model):
     refProd = models.ForeignKey(Produit, on_delete=models.CASCADE, related_name="contenirP")
@@ -38,4 +39,4 @@ class Contenir(models.Model):
     qte = models.IntegerField()
 
     def __str__(self):
-        return self.qte
+        return self.refProd.intituleProd + " dans " + self.idRayon.nomRayon + " : " + str(self.qte) + " unités"

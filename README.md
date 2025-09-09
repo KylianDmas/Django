@@ -32,7 +32,22 @@ Création du modèle
 
 Migrations 001/2/3/4/5/6 fait
 
-Petit challenge fait (pas d'ajout dans le shell donc rien ne s'affiche)
+Ajouts d'objets dans la bd par le shell
+
+Petit challenge fait 
 
 
 TP1 FIN
+
+
+# TD 2
+
+Création du superuser
+
+Possibilité de modifier un produit
+
+Ajout des autres tables
+
+Personalisation de la page produit (tout les paramètres, filtres, tri, changement de statut)
+
+Reste: Django debug toolbar
