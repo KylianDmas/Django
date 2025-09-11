@@ -50,4 +50,7 @@ Ajout des autres tables
 
 Personalisation de la page produit (tout les paramètres, filtres, tri, changement de statut)
 
-Reste: Django debug toolbar
+Vu Django debug toolbar
+
+
+TD2 Fin
