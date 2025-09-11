@@ -54,3 +54,13 @@ Vu Django debug toolbar
 
 
 TD2 Fin
+
+
+# TP 2
+
+Cours sur les erreurs
+
+Templates
+
+Héritage des templates
+

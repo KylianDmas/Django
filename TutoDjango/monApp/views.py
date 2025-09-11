@@ -2,40 +2,43 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 
-from monApp.models import Produit, Categorie, Statut
+from monApp.models import Produit, Categorie, Statut, Rayon
 
-def home(request, param):
-    return HttpResponse("<h1>Hello " + param + " </h1>")
-
-def homevide(request):
-    return HttpResponse("<h1>Hello toi </h1>")
-
+# def home(request, param=None):
+#     # if param is None:
+#     #     return HttpResponse("<h1>Hello toi </h1>")
+#     # else:
+#     #     return HttpResponse("<h1>Hello " + param + " </h1>")
+#     if request.GET and request.GET['name']:
+#         string = request.GET['name']
+#         return HttpResponse("<h1>Hello %s </h1>" % string)
+#     else:
+#         return HttpResponse("<h1>Hello toi </h1>")
+    
+def accueil(request,param=None):
+    if request.GET and request.GET['name']:
+        string = request.GET['name']
+        return render(request, 'monApp/home.html',{'param': string})
+    return render(request, 'monApp/home.html',{'param': param})
+    
 def about_us(request):
-    return HttpResponse("<h1>About Us</h1>")
+    return render(request, 'monApp/about.html')
 
 def contact_us(request):
-    return HttpResponse("<h1>Contact Us</h1>")
+    return render(request, 'monApp/contact.html')
 
 def liste_produits(request):
     prdts = Produit.objects.all()
-    strr = "<ul>"
-    for prod in prdts:
-        strr += f"<li> {prod.intituleProd} </li>"
-    strr+="</ul>"
-    return HttpResponse(strr)
+    return render(request, 'monApp/list_produits.html',{'prdts': prdts})
 
 def liste_cat(request):
-    ctgr = Categorie.objects.all()
-    strr = "<ul>"
-    for cat in ctgr:
-        strr += f"<li> {cat.nomProd} </li>"
-    strr+="</ul>"
-    return HttpResponse(strr)
+    ctgrs = Categorie.objects.all()
+    return render(request, 'monApp/list_categories.html',{'ctgrs': ctgrs})
 
 def liste_sta(request):
-    sttt = Statut.objects.all()
-    strr = "<ul>"
-    for sta in sttt:
-        strr += f"<li> {sta.libelle} </li>"
-    strr+="</ul>"
-    return HttpResponse(strr)
+    sttts = Statut.objects.all()
+    return render(request, 'monApp/list_statut.html',{'sttts': sttts})
+
+def liste_rayon(request):
+    rs = Rayon.objects.all()
+    return render(request, 'monApp/list_rayons.html',{'rs': rs})

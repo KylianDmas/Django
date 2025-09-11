@@ -1,0 +1,10 @@
+{% extends 'monApp/base.html' %}
+{% block contenu %}
+        <h1>Hello mes statut !</h1>
+        <p>Mes statut sont :</p>
+        <ul>
+            {% for sttt in sttts %}
+                <li>{{ sttt.libelle | upper }}</li>
+            {% endfor %}
+        </ul>
+{% endblock %}
