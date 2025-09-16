@@ -64,3 +64,7 @@ Templates
 
 Héritage des templates
 
+Ajout du style avec bootstrap
+
+
+TP2 Fin

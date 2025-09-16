@@ -1,10 +1,31 @@
 {% extends 'monApp/base.html' %}
+{% block menu %}
+    <h1>Liste des rayons</h1>
+{% endblock %}
 {% block contenu %}
-        <h1>Hello mes rayons !</h1>
-        <p>Mes rayons sont :</p>
-        <ul>
+<table class="table">
+        <thead>
+            <th>Id</th>
+            <th>Nom Rayon</th>
+        </thead>
+        <tbody>
             {% for r in rs %}
-                <li>{{ r.nomRayon | upper }}</li>
+            <tr>
+                <td>{{ r.idRayon }} </td>
+                <td>{{ r.nomRayon }} </td>
+            </tr>
             {% endfor %}
-        </ul>
+        </tbody>
+    </table>
+    <p>
+    J'ai
+    {% if rs|length < 5 %}
+    peu de
+    {% elif rs|length < 10 %}
+    quelques
+    {% else %}
+    beaucoup de
+    {% endif %}
+    rayons préférés.
+    </p>
 {% endblock %}
