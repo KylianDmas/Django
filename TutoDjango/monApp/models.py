@@ -38,5 +38,8 @@ class Contenir(models.Model):
     idRayon = models.ForeignKey(Rayon, on_delete=models.CASCADE, related_name="contenirR")
     qte = models.IntegerField()
 
+    class Meta:
+        unique_together = (('refProd', 'idRayon'),)
+
     def __str__(self):
         return self.refProd.intituleProd + " dans " + self.idRayon.nomRayon + " : " + str(self.qte) + " unités"
