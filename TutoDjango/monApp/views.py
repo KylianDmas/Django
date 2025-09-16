@@ -15,11 +15,11 @@ from monApp.models import Produit, Categorie, Statut, Rayon
 #     else:
 #         return HttpResponse("<h1>Hello toi </h1>")
     
-def accueil(request,param=None):
-    if request.GET and request.GET['name']:
-        string = request.GET['name']
-        return render(request, 'monApp/home.html',{'param': string})
-    return render(request, 'monApp/home.html',{'param': param})
+# def accueil(request,param=None):
+#     if request.GET and request.GET['name']:
+#         string = request.GET['name']
+#         return render(request, 'monApp/home.html',{'param': string})
+#     return render(request, 'monApp/home.html',{'param': param})
     
 def about_us(request):
     return render(request, 'monApp/about.html')
@@ -42,3 +42,9 @@ def liste_sta(request):
 def liste_rayon(request):
     rs = Rayon.objects.all()
     return render(request, 'monApp/list_rayons.html',{'rs': rs})
+
+class HomeView(TemplateView):
+    template_name = "monApp/page_home.html"
+
+    def post(self, request, **kwargs):
+        return render(request, self.template_name)
