@@ -11,7 +11,7 @@
         <tbody>
             {% for sttt in sttts %}
             <tr>
-                <td>{{ sttt.idStatut }} </td>
+                <td><a href="{% url 'dtl_sttt' sttt.idStatut %}">{{ sttt.idStatut }}</a></td>
                 <td>{{ sttt.libelle }} </td>
             </tr>
             {% endfor %}

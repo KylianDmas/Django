@@ -11,7 +11,7 @@
         <tbody>
             {% for ctgr in ctgrs %}
             <tr>
-                <td>{{ ctgr.idCat }} </td>
+                <td><a href="{% url 'dtl_ctgr' ctgr.idCat %}">{{ ctgr.idCat }}</a> </td>
                 <td>{{ ctgr.nomCat }} </td>
             </tr>
             {% endfor %}

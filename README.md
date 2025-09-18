@@ -72,3 +72,6 @@ TP2 Fin
 
 # TD 3
 
+Vues génériques pour toutes les pages
+
+Début login/logout
