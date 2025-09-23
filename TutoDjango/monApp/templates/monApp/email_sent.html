@@ -1,0 +1,7 @@
+{% extends 'monApp/base.html' %}
+
+{% block contenu %}
+  <h1>Email sent successfully</h1>
+  <p>Thank you for contacting us. We’ll get back to you shortly.</p>
+  <a href="{% url 'contact' %}">Back to contact form</a>
+{% endblock %}

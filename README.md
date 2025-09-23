@@ -74,4 +74,16 @@ TP2 Fin
 
 Vues génériques pour toutes les pages
 
-Début login/logout
+Vues génériques pour login/logout
+
+Formulaire contact
+
+Améliorations de la vue/du formulaire de contact
+
+Envoi d'email dans le terminal
+
+Utilisation de redirect et création de la page email_sent
+
+
+TD3 Fin
+

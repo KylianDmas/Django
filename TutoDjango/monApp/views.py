@@ -10,7 +10,13 @@ from django.contrib.auth.views import LoginView
 
 from django.contrib.auth.models import User
 
+from django.core.mail import send_mail
+
+from django.shortcuts import redirect
+
 from monApp.models import Produit, Categorie, Statut, Rayon
+
+from monApp.forms import ContactUsForm
 
 # def home(request, param=None):
 #     # if param is None:
@@ -74,16 +80,22 @@ class AboutView(TemplateView):
     def post(self, request, **kwargs):
         return render(request, self.template_name)
     
-class ContactView(TemplateView):
-    template_name = "monApp/page_home.html"
+def ContactView(request):
+    titreh1 = "Contact us !"
 
-    def get_context_data(self, **kwargs):
-        context = super(ContactView, self).get_context_data(**kwargs)
-        context['titreh1'] = "Contact us..."
-        return context
-    
-    def post(self, request, **kwargs):
-        return render(request, self.template_name)
+    if request.method=='POST':
+        form = ContactUsForm(request.POST)
+        if form.is_valid():
+            send_mail(
+            subject = f'Message from {form.cleaned_data.get("name") or "anonyme"} via MonProjet Contact Us form',
+            message=form.cleaned_data['message'],
+            from_email=form.cleaned_data['email'],
+            recipient_list=['admin@monprojet.com'],
+            )
+            return redirect('email-sent')
+    else:
+        form = ContactUsForm()
+    return render(request, "monApp/page_home.html",{'titreh1':titreh1, 'form':form})
     
 class ProduitListView(ListView):
     model = Produit
@@ -170,6 +182,7 @@ class RayonDetailView(DetailView):
     
 class ConnectView(LoginView):
     template_name = 'monApp/page_login.html'
+
     def post(self, request, **kwargs):
         lgn = request.POST.get('username', False)
         pswrd = request.POST.get('password', False)
@@ -193,3 +206,13 @@ class RegisterView(TemplateView):
             return render(request, 'monApp/page_login.html')
         else:
             return render(request, 'monApp/page_register.html')
+        
+class DisconnectView(TemplateView):
+    template_name = 'monApp/page_logout.html'
+
+    def get(self, request, **kwargs):
+        logout(request)
+        return render(request, self.template_name)
+    
+def EmailSentView(request):
+    return render(request, "monApp/email_sent.html")
