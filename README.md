@@ -87,3 +87,10 @@ Utilisation de redirect et création de la page email_sent
 
 TD3 Fin
 
+
+#TP3
+
+Début ProduitForm et CreateProduitView
+
+Petit point sécurité
+
