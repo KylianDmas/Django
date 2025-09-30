@@ -10,5 +10,7 @@
     <ul>
         <li>Id rayon : {{r.idRayon }} </li>
     </ul>
+    <a href="{% url 'r-chng' r.idRayon %}">modifier</a>
+    <a href="{% url 'dlt-r' r.idRayon %}">supprimer</a>
     <a href="{% url 'lst_rs' %}">Retour à la liste des rayons</a>
 {% endblock %}

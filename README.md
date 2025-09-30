@@ -90,7 +90,13 @@ TD3 Fin
 
 # TP3
 
-Début ProduitForm et CreateProduitView
+ProduitForm et ProduitCreateView
 
 Petit point sécurité
 
+ProduitDeleteView et ProduitUpdateView
+
+Même chose pour catégorie, rayon et statut
+
+
+TP3 Fin

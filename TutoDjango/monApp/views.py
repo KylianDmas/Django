@@ -14,48 +14,13 @@ from django.core.mail import send_mail
 
 from django.shortcuts import redirect
 
+from django.forms import BaseModelForm
+
+from django.urls import reverse_lazy
+
 from monApp.models import Produit, Categorie, Statut, Rayon
 
-from monApp.forms import ContactUsForm, ProduitForm
-
-# def home(request, param=None):
-#     # if param is None:
-#     #     return HttpResponse("<h1>Hello toi </h1>")
-#     # else:
-#     #     return HttpResponse("<h1>Hello " + param + " </h1>")
-#     if request.GET and request.GET['name']:
-#         string = request.GET['name']
-#         return HttpResponse("<h1>Hello %s </h1>" % string)
-#     else:
-#         return HttpResponse("<h1>Hello toi </h1>")
-    
-# def accueil(request,param=None):
-#     if request.GET and request.GET['name']:
-#         string = request.GET['name']
-#         return render(request, 'monApp/home.html',{'param': string})
-#     return render(request, 'monApp/home.html',{'param': param})
-    
-# def about_us(request):
-#     return render(request, 'monApp/about.html')
-
-# def contact_us(request):
-#     return render(request, 'monApp/contact.html')
-
-# def liste_produits(request):
-#     prdts = Produit.objects.all()
-#     return render(request, 'monApp/list_produits.html',{'prdts': prdts})
-
-# def liste_cat(request):
-#     ctgrs = Categorie.objects.all()
-#     return render(request, 'monApp/list_categories.html',{'ctgrs': ctgrs})
-
-# def liste_sta(request):
-#     sttts = Statut.objects.all()
-#     return render(request, 'monApp/list_statut.html',{'sttts': sttts})
-
-# def liste_rayon(request):
-#     rs = Rayon.objects.all()
-#     return render(request, 'monApp/list_rayons.html',{'rs': rs})
+from monApp.forms import ContactUsForm, ProduitForm, CategorieForm, StatutForm, RayonForm
 
 class HomeView(TemplateView):
     template_name = "monApp/page_home.html"
@@ -217,12 +182,94 @@ class DisconnectView(TemplateView):
 def EmailSentView(request):
     return render(request, "monApp/email_sent.html")
 
-def ProduitCreate(request):
-    if request.method == 'POST':
-        form = ProduitForm(request.POST)
-        if form.is_valid():
-            prdt = form.save()
-            return redirect('dtl-prdt', prdt.refProd)
-    else:
-        form = ProduitForm()
-    return render(request, "monApp/create_produit.html", {'form': form})
+class ProduitCreateView(CreateView):
+    model = Produit
+    form_class=ProduitForm
+    template_name = "monApp/create_produit.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        prdt = form.save()
+        return redirect('dtl_prdt', prdt.refProd)
+    
+class ProduitUpdateView(UpdateView):
+    model = Produit
+    form_class=ProduitForm
+    template_name = "monApp/update_produit.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        prdt = form.save()
+        return redirect('dtl_prdt', prdt.refProd)
+    
+class ProduitDeleteView(DeleteView):
+    model = Produit
+    template_name = "monApp/delete_produit.html"
+    success_url = reverse_lazy('lst_prdts')
+
+class CategorieCreateView(CreateView):
+    model = Categorie
+    form_class=CategorieForm
+    template_name = "monApp/create_categorie.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        ctgr = form.save()
+        return redirect('dtl_ctgr', ctgr.idCat)
+
+class CategorieUpdateView(UpdateView):
+    model = Categorie
+    form_class=CategorieForm
+    template_name = "monApp/update_categorie.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        ctgr = form.save()
+        return redirect('dtl_ctgr', ctgr.idCat)
+
+class CategorieDeleteView(DeleteView):
+    model = Categorie
+    template_name = "monApp/delete_categorie.html"
+    success_url = reverse_lazy('lst_ctgrs')
+
+class StatutCreateView(CreateView):
+    model = Statut
+    form_class=StatutForm
+    template_name = "monApp/create_statut.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        sttt = form.save()
+        return redirect('dtl_sttt', sttt.idStatut)
+
+class StatutUpdateView(UpdateView):
+    model = Statut
+    form_class=StatutForm
+    template_name = "monApp/update_statut.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        sttt = form.save()
+        return redirect('dtl_sttt', sttt.idStatut)
+    
+class StatutDeleteView(DeleteView):
+    model = Statut
+    template_name = "monApp/delete_statut.html"
+    success_url = reverse_lazy('lst_sttts')
+
+class RayonCreateView(CreateView):
+    model = Rayon
+    form_class=RayonForm
+    template_name = "monApp/create_rayon.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        r = form.save()
+        return redirect('dtl_r', r.idRayon)
+
+class RayonUpdateView(UpdateView):
+    model = Rayon
+    form_class=RayonForm
+    template_name = "monApp/update_rayon.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        r = form.save()
+        return redirect('dtl_r', r.idRayon)
+
+class RayonDeleteView(DeleteView):
+    model = Rayon
+    template_name = "monApp/delete_rayon.html"
+    success_url = reverse_lazy('lst_rs')

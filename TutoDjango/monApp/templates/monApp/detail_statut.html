@@ -11,5 +11,7 @@
         <li>Id statut : {{sttt.idStatut }} </li>
 
     </ul>
+    <a href="{% url 'sttt-chng' sttt.idStatut %}">modifier</a>
+    <a href="{% url 'dlt-sttt' sttt.idStatut %}">supprimer</a>
     <a href="{% url 'lst_sttts' %}">Retour à la liste des statut</a>
 {% endblock %}

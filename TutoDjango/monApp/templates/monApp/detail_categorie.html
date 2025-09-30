@@ -10,5 +10,7 @@
     <ul>
         <li>Id catégorie : {{ctgr.idCat }} </li>
     </ul>
+    <a href="{% url 'ctgr-chng' ctgr.idCat %}">modifier</a>
+    <a href="{% url 'dlt-ctgr' ctgr.idCat %}">supprimer</a>
     <a href="{% url 'lst_ctgrs' %}">Retour à la liste des catégories</a>
 {% endblock %}
