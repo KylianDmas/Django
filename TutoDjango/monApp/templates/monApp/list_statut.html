@@ -7,17 +7,25 @@
         <thead>
             <th>Id</th>
             <th>Libelle</th>
+            <th>Nombre de Produits</th>
+            <th></th>
         </thead>
         <tbody>
             {% for sttt in sttts %}
-            <tr>
-                <td><a href="{% url 'dtl_sttt' sttt.idStatut %}">{{ sttt.idStatut }}</a></td>
-                <td>{{ sttt.libelle }} </td>
-            </tr>
+                <tr>
+                    <td><a href="{% url 'dtl_sttt' sttt.idStatut %}">{{ sttt.idStatut }}</a></td>
+                    <td>{{ sttt.libelle }} </td>
+                    <td>{{ sttt.nb_produits }} </td>
+                    <td>
+                    <a href="{% url 'dtl_sttt' sttt.idStatut %}" class="btn btn-primary mt-2">Détails</a>
+                    <a href="{% url 'sttt-chng' sttt.idStatut %}" class="btn btn-warning mt-2">Modifier</a>
+                    <a href="{% url 'dlt-sttt' sttt.idStatut %}" class="btn btn-danger mt-2">Supprimer</a>
+                    </td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'crt-sttt' %}">Créer un nouveau statut</a>
+    <a href="{% url 'crt-sttt' %}" class="btn btn-success mt-2">Créer un nouveau statut</a>
     <p>
     J'ai
     {% if sttts|length < 5 %}

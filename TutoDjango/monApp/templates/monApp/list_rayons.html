@@ -3,21 +3,29 @@
     <h1>Liste des rayons</h1>
 {% endblock %}
 {% block contenu %}
-<table class="table">
+    <table class="table">
         <thead>
             <th>Id</th>
-            <th>Nom Rayon</th>
+            <th>Nom rayon</th>
+            <th>Valeur marchande du rayon</th>
+            <th></th>
         </thead>
         <tbody>
-            {% for r in rs %}
-            <tr>
-                <td><a href="{% url 'dtl_r' r.idRayon %}">{{ r.idRayon }}</a></td>
-                <td>{{ r.nomRayon }} </td>
-            </tr>
+            {% for data in rs_dt %}
+                <tr>
+                    <td><a href="{% url 'dtl_r' data.rayon.idRayon %}">{{ data.rayon.idRayon }}</a></td>
+                    <td>{{ data.rayon.nomRayon }} </td>
+                    <td>{{ data.total_stock }} €</td>
+                    <td>
+                        <a href="{% url 'dtl_r' data.rayon.idRayon %}" class="btn btn-primary mt-2">Détails</a>
+                        <a href="{% url 'r-chng' data.rayon.idRayon %}" class="btn btn-warning mt-2">Modifier</a>
+                        <a href="{% url 'dlt-r' data.rayon.idRayon %}" class="btn btn-danger mt-2">Supprimer</a>
+                    </td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'crt-r' %}">Créer un nouveau rayon</a>
+    <a href="{% url 'crt-r' %}" class="btn btn-success mt-2">Créer un nouveau rayon</a>
     <p>
     J'ai
     {% if rs|length < 5 %}

@@ -100,3 +100,16 @@ Même chose pour catégorie, rayon et statut
 
 
 TP3 Fin
+
+
+# TD4
+
+Ajout de style pour la liste des catégories et les détails des catégories
+
+Ajout de tout les produits associés dans détails des catégorie
+
+Pareil pour statut
+
+Style dans la liste des rayons
+
+A reprendre avec les détails

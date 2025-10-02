@@ -1,3 +1,4 @@
+from itertools import count
 from django.shortcuts import render
 
 from django.http import HttpResponse
@@ -17,6 +18,8 @@ from django.shortcuts import redirect
 from django.forms import BaseModelForm
 
 from django.urls import reverse_lazy
+
+from django.db.models import Count
 
 from monApp.models import Produit, Categorie, Statut, Rayon
 
@@ -90,6 +93,10 @@ class CategorieListView(ListView):
     template_name = "monApp/list_categories.html"
     context_object_name = "ctgrs"
 
+    def get_queryset(self):
+        # Annoter chaque catégorie avec le nombre de produits liés
+        return Categorie.objects.annotate(nb_produits=Count('produits'))
+    
     def get_context_data(self, **kwargs):
         context = super(CategorieListView, self).get_context_data(**kwargs)
         context['titremenu'] = "Liste de mes catégories"
@@ -100,15 +107,24 @@ class CategorieDetailView(DetailView):
     template_name = "monApp/detail_categorie.html"
     context_object_name = "ctgr"
 
+    def get_queryset(self):
+        # Annoter chaque catégorie avec le nombre de produits liés
+        return Categorie.objects.annotate(nb_produits=Count('produits'))
+    
     def get_context_data(self, **kwargs):
         context = super(CategorieDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail de la catégorie"
+        context['prdts'] = self.object.produits.all()
         return context
     
 class StatutListView(ListView):
     model = Statut
     template_name = "monApp/list_statut.html"
     context_object_name = "sttts"
+
+    def get_queryset(self):
+        # Annoter chaque catégorie avec le nombre de produits liés
+        return Statut.objects.annotate(nb_produits=Count('produitS'))
 
     def get_context_data(self, **kwargs):
         context = super(StatutListView, self).get_context_data(**kwargs)
@@ -120,9 +136,14 @@ class StatutDetailView(DetailView):
     template_name = "monApp/detail_statut.html"
     context_object_name = "sttt"
 
+    def get_queryset(self):
+        # Annoter chaque catégorie avec le nombre de produits liés
+        return Statut.objects.annotate(nb_produits=Count('produitS'))
+
     def get_context_data(self, **kwargs):
         context = super(StatutDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail du statut"
+        context['prdts'] = self.object.produitS.all()
         return context
     
 class RayonListView(ListView):
@@ -133,6 +154,13 @@ class RayonListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(RayonListView, self).get_context_data(**kwargs)
         context['titremenu'] = "Liste de mes rayons"
+        rs_dt = []
+        for rayon in context['rs']:
+            total = 0
+            for contenir in rayon.contenirR.all():
+                total += contenir.refProd.prixUnitaireProd * contenir.qte
+            rs_dt.append({'rayon': rayon,'total_stock': total})
+        context['rs_dt'] = rs_dt
         return context
 
 class RayonDetailView(DetailView):
