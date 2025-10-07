@@ -12,6 +12,7 @@
             <th>Date fabrication</th>
             <th>Catégorie</th>
             <th>Statut</th>
+            <th></th>
         </thead>
         <tbody>
             {% for prdt in prdts %}
@@ -22,11 +23,16 @@
                 <td>{{ prdt.dateFabr }} </td>
                 <td>{{ prdt.categorie }} </td>
                 <td>{{ prdt.statut }} </td>
+                <td>
+                    <a href="{% url 'dtl_prdt' prdt.refProd %}" class="btn btn-primary mt-2">Détails</a>
+                    <a href="{% url 'prdt-chng' prdt.refProd %}" class="btn btn-warning mt-2">Modifier</a>
+                    <a href="{% url 'dlt-prdt' prdt.refProd %}" class="btn btn-danger mt-2">Supprimer</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'crt-prdt' %}">Créer un nouveau produit</a>
+    <a href="{% url 'crt-prdt' %}" class="btn btn-success mt-2">Créer un nouveau produit</a>
     <p>
     J'ai
     {% if prdts|length < 5 %}
@@ -38,4 +44,10 @@
     {% endif %}
     produits préférés.
     </p>
+    <p class="lead mb-3 ml-0">Rechercher un élément...</p>
+    <form method="GET" action="">
+        <input class="form-control" type="text" name="search" placeholder="Tapez ici votre recherche"
+        value="{{ request.GET.search }}">
+        <button type="submit" class="btn btn-success mt-2">Rechercher</button>
+    </form>
 {% endblock %}

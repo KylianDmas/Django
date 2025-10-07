@@ -19,9 +19,13 @@ from django.forms import BaseModelForm
 
 from django.urls import reverse_lazy
 
-from django.db.models import Count
+from django.db.models import Count, Prefetch
 
-from monApp.models import Produit, Categorie, Statut, Rayon
+from django.contrib.auth.decorators import login_required
+
+from django.utils.decorators import method_decorator
+
+from monApp.models import Produit, Categorie, Statut, Rayon, Contenir
 
 from monApp.forms import ContactUsForm, ProduitForm, CategorieForm, StatutForm, RayonForm
 
@@ -76,7 +80,10 @@ class ProduitListView(ListView):
         return context
     
     def get_queryset(self) :
-        return Produit.objects.order_by("prixUnitaireProd")
+        query = self.request.GET.get('search')
+        if query:
+            return Produit.objects.filter(intituleProd__icontains=query).select_related('categorie').select_related('statut')
+        return Produit.objects.select_related('categorie').select_related('statut')
     
 class ProduitDetailView(DetailView):
     model = Produit
@@ -95,6 +102,9 @@ class CategorieListView(ListView):
 
     def get_queryset(self):
         # Annoter chaque catégorie avec le nombre de produits liés
+        query = self.request.GET.get('search')
+        if query:
+            return Categorie.objects.annotate(nb_produits=Count('produits')).filter(nomCat__icontains=query)
         return Categorie.objects.annotate(nb_produits=Count('produits'))
     
     def get_context_data(self, **kwargs):
@@ -124,6 +134,9 @@ class StatutListView(ListView):
 
     def get_queryset(self):
         # Annoter chaque catégorie avec le nombre de produits liés
+        query = self.request.GET.get('search')
+        if query:
+            return Statut.objects.annotate(nb_produits=Count('produitS')).filter(libelle__icontains=query)
         return Statut.objects.annotate(nb_produits=Count('produitS'))
 
     def get_context_data(self, **kwargs):
@@ -151,6 +164,14 @@ class RayonListView(ListView):
     template_name = "monApp/list_rayons.html"
     context_object_name = "rs"
 
+    def get_queryset(self):
+        
+        query = self.request.GET.get('search')
+        if query:
+            return Rayon.objects.prefetch_related(Prefetch("contenirR", queryset=Contenir.objects.select_related("refProd"))).filter(nomRayon__icontains=query)
+        return Rayon.objects.prefetch_related(Prefetch("contenirR", queryset=Contenir.objects.select_related("refProd")))
+
+
     def get_context_data(self, **kwargs):
         context = super(RayonListView, self).get_context_data(**kwargs)
         context['titremenu'] = "Liste de mes rayons"
@@ -171,6 +192,24 @@ class RayonDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(RayonDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail du rayon"
+
+        prdts_dt = []
+        total_rayon = 0
+        total_nb_produit = 0
+
+        for contenir in self.object.contenirR.all():
+            total_produit = contenir.refProd.prixUnitaireProd * contenir.qte
+            prdts_dt.append({   'produit': contenir.refProd,
+                                'qte': contenir.qte,
+                                'prix_unitaire': contenir.refProd.prixUnitaireProd,
+                                'total_produit': total_produit} )
+            total_rayon += total_produit
+            total_nb_produit += contenir.qte
+
+        context['prdts_dt'] = prdts_dt
+        context['total_rayon'] = total_rayon
+        context['total_nb_produit'] = total_nb_produit
+
         return context
     
 class ConnectView(LoginView):
@@ -210,6 +249,7 @@ class DisconnectView(TemplateView):
 def EmailSentView(request):
     return render(request, "monApp/email_sent.html")
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class ProduitCreateView(CreateView):
     model = Produit
     form_class=ProduitForm
@@ -219,6 +259,7 @@ class ProduitCreateView(CreateView):
         prdt = form.save()
         return redirect('dtl_prdt', prdt.refProd)
     
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class ProduitUpdateView(UpdateView):
     model = Produit
     form_class=ProduitForm
@@ -227,12 +268,14 @@ class ProduitUpdateView(UpdateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         prdt = form.save()
         return redirect('dtl_prdt', prdt.refProd)
-    
+
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class ProduitDeleteView(DeleteView):
     model = Produit
     template_name = "monApp/delete_produit.html"
     success_url = reverse_lazy('lst_prdts')
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class CategorieCreateView(CreateView):
     model = Categorie
     form_class=CategorieForm
@@ -242,6 +285,7 @@ class CategorieCreateView(CreateView):
         ctgr = form.save()
         return redirect('dtl_ctgr', ctgr.idCat)
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class CategorieUpdateView(UpdateView):
     model = Categorie
     form_class=CategorieForm
@@ -251,11 +295,13 @@ class CategorieUpdateView(UpdateView):
         ctgr = form.save()
         return redirect('dtl_ctgr', ctgr.idCat)
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class CategorieDeleteView(DeleteView):
     model = Categorie
     template_name = "monApp/delete_categorie.html"
     success_url = reverse_lazy('lst_ctgrs')
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class StatutCreateView(CreateView):
     model = Statut
     form_class=StatutForm
@@ -265,6 +311,7 @@ class StatutCreateView(CreateView):
         sttt = form.save()
         return redirect('dtl_sttt', sttt.idStatut)
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class StatutUpdateView(UpdateView):
     model = Statut
     form_class=StatutForm
@@ -273,12 +320,14 @@ class StatutUpdateView(UpdateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         sttt = form.save()
         return redirect('dtl_sttt', sttt.idStatut)
-    
+
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')    
 class StatutDeleteView(DeleteView):
     model = Statut
     template_name = "monApp/delete_statut.html"
     success_url = reverse_lazy('lst_sttts')
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class RayonCreateView(CreateView):
     model = Rayon
     form_class=RayonForm
@@ -288,6 +337,7 @@ class RayonCreateView(CreateView):
         r = form.save()
         return redirect('dtl_r', r.idRayon)
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class RayonUpdateView(UpdateView):
     model = Rayon
     form_class=RayonForm
@@ -297,6 +347,7 @@ class RayonUpdateView(UpdateView):
         r = form.save()
         return redirect('dtl_r', r.idRayon)
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class RayonDeleteView(DeleteView):
     model = Rayon
     template_name = "monApp/delete_rayon.html"

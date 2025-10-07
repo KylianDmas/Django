@@ -112,4 +112,12 @@ Pareil pour statut
 
 Style dans la liste des rayons
 
-A reprendre avec les détails
+Ajout de tout les produits associés dans détails des rayons
+
+select_related et Prefetch
+
+Ajout du login_required et method_decorator
+
+Ajout de la barre de recherche dans Produit, Catégorie, Rayon et Statut
+
+Dernière page du td4 à faire "Ajout de produits dans un rayon"
