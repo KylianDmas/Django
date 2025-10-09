@@ -27,7 +27,7 @@ from django.utils.decorators import method_decorator
 
 from monApp.models import Produit, Categorie, Statut, Rayon, Contenir
 
-from monApp.forms import ContactUsForm, ProduitForm, CategorieForm, StatutForm, RayonForm
+from monApp.forms import ContactUsForm, ProduitForm, CategorieForm, StatutForm, RayonForm, ContenirForm
 
 class HomeView(TemplateView):
     template_name = "monApp/page_home.html"
@@ -352,3 +352,13 @@ class RayonDeleteView(DeleteView):
     model = Rayon
     template_name = "monApp/delete_rayon.html"
     success_url = reverse_lazy('lst_rs')
+
+
+class ContenirCreateView(CreateView):
+    model = Contenir
+    form_class=ContenirForm
+    template_name = "monApp/create_contenir.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        ctnr = form.save()
+        return redirect('dtl_r', ctnr.idRayon.idRayon)
