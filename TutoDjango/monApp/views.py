@@ -1,4 +1,5 @@
 from itertools import count
+from sqlite3 import IntegrityError
 from django.shortcuts import render
 
 from django.http import HttpResponse
@@ -13,7 +14,7 @@ from django.contrib.auth.models import User
 
 from django.core.mail import send_mail
 
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 
 from django.forms import BaseModelForm
 
@@ -24,6 +25,8 @@ from django.db.models import Count, Prefetch
 from django.contrib.auth.decorators import login_required
 
 from django.utils.decorators import method_decorator
+
+from django.contrib import messages
 
 from monApp.models import Produit, Categorie, Statut, Rayon, Contenir
 
@@ -359,6 +362,81 @@ class ContenirCreateView(CreateView):
     form_class=ContenirForm
     template_name = "monApp/create_contenir.html"
 
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        ctnr = form.save()
-        return redirect('dtl_r', ctnr.idRayon.idRayon)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pk'] = self.kwargs['pk']
+        return context
+
+    def form_valid(self, form):
+        r = get_object_or_404(Rayon, pk=self.kwargs['pk'])
+        ctnr = form.save(commit=False)
+        ctnr.idRayon = r
+
+        if Contenir.objects.filter(refProd=ctnr.refProd, idRayon=r).exists():
+            messages.error(self.request, "Ce produit est déjà présent dans ce rayon.")
+            return self.form_invalid(form)
+
+        ctnr.save()
+        return redirect('dtl_r', pk=r.pk)
+    
+class ContenirUpdateView(CreateView):
+    model = Contenir
+    form_class=ContenirForm
+    template_name = "monApp/update_contenir.html"
+
+    def get_initial(self):
+        return {}
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pk'] = self.kwargs['pk']
+        return context
+
+    def form_valid(self, form):
+        r = get_object_or_404(Rayon, pk=self.kwargs['pk'])
+        ctnr = form.save(commit=False)
+        ctnr.idRayon = r
+        refProd = form.cleaned_data['refProd']
+        qte = form.cleaned_data['qte']
+
+        existing = Contenir.objects.filter(refProd=refProd, idRayon=r).first()
+
+        if existing:
+            if qte == 0:
+                existing.delete()
+                messages.warning(self.request, f"🗑️ Produit {refProd} supprimé du rayon.")
+            else:
+                existing.qte = qte
+                existing.save()
+        else:
+            if qte > 0:
+                Contenir.objects.create(refProd=refProd, idRayon=r, qte=qte)
+
+        return redirect('dtl_r', pk=r.pk)
+
+class ContenirUpdateAddView(CreateView):
+    model = Contenir
+    form_class=ContenirForm
+    template_name = "monApp/update_contenir_add.html"
+
+    def get_initial(self):
+        return {}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pk'] = self.kwargs['pk']
+        return context
+
+    def form_valid(self, form):
+        r = get_object_or_404(Rayon, pk=self.kwargs['pk'])
+        ctnr = form.save(commit=False)
+        ctnr.idRayon = r
+
+        existing = Contenir.objects.filter(refProd=ctnr.refProd, idRayon=r).first()
+        if existing:
+            existing.qte += ctnr.qte
+            existing.save()
+        else:
+            ctnr.save()
+        return redirect('dtl_r', pk=r.pk)
+

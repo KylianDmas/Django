@@ -53,4 +53,7 @@
             {% endif %}
         </div>
     </div>
+    <a href="{% url 'crt-cntnr' r.idRayon %}" class="btn btn-primary mt-2">Ajouter un produit</a>
+    <a href="{% url 'pdta-cntnr' r.idRayon %}" class="btn btn-primary mt-2">Ajouter de la quantité</a>
+    <a href="{% url 'pdt-cntnr' r.idRayon %}" class="btn btn-primary mt-2">Changer la quantité</a>
 {% endblock %}
