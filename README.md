@@ -125,3 +125,11 @@ ContenirForm et ContenirCreateView
 Ajout ContenirUpdateView (pour changer la quantité ou supprimer si la quantité est à 0 ou moins)
 
 Ajout ContenirUpdateAddView (pour ajouter une quantité à un produit déjà existant ou créer un produit s'il n'existe pas encore)
+
+
+TD4 Fin
+
+
+# TP4
+
+Tests de Form, Model et Url
