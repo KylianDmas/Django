@@ -132,4 +132,6 @@ TD4 Fin
 
 # TP4
 
-Tests de Form, Model et Url
+Tests de Form, Model, Url et Crud
+
+![Coverage](coverage.png)
